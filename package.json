@@ -1,0 +1,30 @@
+{
+  "name": "vehicle-rental-system",
+  "version": "1.0.0",
+  "description": "Vehicle Rental System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tsx watch ./src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TOMJID/Vehicle-Rental-System.git"
+  },
+  "keywords": [],
+  "author": "tomjid",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TOMJID/Vehicle-Rental-System/issues"
+  },
+  "homepage": "https://github.com/TOMJID/Vehicle-Rental-System#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
