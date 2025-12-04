@@ -1,13 +1,11 @@
-import {Pool} from "pg"
+import { Pool } from "pg";
 import { ENV } from "./dotenv.config";
 
-const pool= new Pool({
+const pool = new Pool({
   connectionString: ENV.connectionString,
-
 });
 
-
-export const initDB= async()=>{
+export const initDB = async () => {
   //? User Table
 
   try {
@@ -21,12 +19,10 @@ export const initDB= async()=>{
       role VARCHAR(50),
       created_at TIMESTAMP DEFAULT NOW(),
       updated_at TIMESTAMP DEFAULT NOW() 
-     )`
-    )
+     )`);
 
-     console.log("Database initialized successfully");
+    console.log("Database initialized successfully");
   } catch (error: any) {
-      console.error("Error initializing database:", error);
+    console.error("Error initializing database:", error);
   }
-
-}
+};
