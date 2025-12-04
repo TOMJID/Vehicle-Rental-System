@@ -3,8 +3,9 @@ import { userController } from "./user.controller";
 
 const router = express.Router();
 
-//* Define user CRUD routes here
-//? /api/v1/auth/signup
+//* define user CRUD routes here
+//? route => /api/v1/auth/signup
 router.post("/auth/signup", userController.createUser);
 
+router.get("/users", userController.getAllUsers);
 export const userRouter = router;

@@ -3,10 +3,14 @@ import { initDB } from "./config/db.config";
 import { userRouter } from "./modules/users/user.route";
 
 const app = express();
+
+//? parse json
 app.use(express.json());
+
 //? initialize database
 initDB();
 
+//? basic route
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
