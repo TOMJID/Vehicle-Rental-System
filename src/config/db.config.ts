@@ -1,7 +1,8 @@
 import {Pool} from "pg"
+import { ENV } from "./dotenv.config";
 
 const pool= new Pool({
-  connectionString: "",
+  connectionString: ENV.connectionString,
 
 });
 
