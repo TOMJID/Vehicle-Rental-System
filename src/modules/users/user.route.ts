@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { userController } from "./user.controller";
+import auth from "../../middleware/auth.middleware";
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ const router = express.Router();
 router.post("/auth/signup", userController.createUser);
 
 //? route => /api/v1/users
-router.get("/users", userController.getAllUsers);
+router.get("/users", auth(), userController.getAllUsers);
 
 //? route => /api/v1/users/1
 router.get("/users/:userId", userController.getUserById);
