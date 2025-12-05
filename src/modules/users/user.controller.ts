@@ -49,7 +49,7 @@ const getUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const result = await userService.getUserById(userId as string);
+    const result = await userService.getUserById(userId as unknown as number);
 
     if (result.rows.length === 0) {
       res.status(404).json({
