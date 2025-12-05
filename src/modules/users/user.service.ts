@@ -27,14 +27,30 @@ const getAllUsers = async () => {
   return result;
 };
 
+//? get single user by id
 const getUserById = async (userId: number) => {
   const result = await pool.query(`SELECT * FROM users WHERE id=$1`, [userId]);
 
   return result;
 };
 
+//? update user by id
+const updateUserById = async (
+  payload: Record<string, unknown>,
+  userId: any
+) => {
+  const { name, email, phone, role } = payload;
+
+  const result = await pool.query(
+    `UPDATE users SET name=$1, email=$2, phone=$3, role=$4  WHERE id=$5 RETURNING *`,
+    [name, email, phone, role, userId]
+  );
+
+  return result;
+};
 export const userService = {
   createUser,
   getAllUsers,
   getUserById,
+  updateUserById,
 };

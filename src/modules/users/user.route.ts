@@ -13,4 +13,8 @@ router.get("/users", userController.getAllUsers);
 
 //? route => /api/v1/users/1
 router.get("/users/:userId", userController.getUserById);
+
+//? route => /api/v1/users/1
+router.put("/users/:userId", userController.updateUserById);
+
 export const userRouter = router;

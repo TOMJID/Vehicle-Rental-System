@@ -14,14 +14,6 @@ const createUser = async (req: Request, res: Response) => {
       data: result.rows[0],
     });
   } catch (error: any) {
-    //? this for password validation
-    if (error.message === "Password must be longer than 6 characters") {
-      res.status(400).json({
-        success: false,
-        message: error.message,
-      });
-      return;
-    }
 
     //? for all other errors
     res.status(500).json({
@@ -66,8 +58,28 @@ const getUserById = async (req: Request, res: Response) => {
   } catch (error: any) {}
 };
 
+//? update user according to id
+const updateUserById = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const payload = req.body;
+
+  try {
+    const result = await userService.updateUserById(payload, userId as any);
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(404).json({
+      success: true,
+      message: error.message,
+    });
+  }
+};
 export const userController = {
   createUser,
   getAllUsers,
   getUserById,
+  updateUserById,
 };
