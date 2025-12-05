@@ -7,7 +7,6 @@ const pool = new Pool({
 
 export const initDB = async () => {
   //? User Table
-
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users(
@@ -24,6 +23,23 @@ export const initDB = async () => {
     console.log("Database initialized successfully");
   } catch (error: any) {
     console.error("Error initializing database:", error);
+  }
+
+  //? vehicles Table
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS vehicles(
+      id SERIAL PRIMARY KEY,
+      vehicles_name VARCHAR(100) NOT NULL,
+      type VARCHAR(10) NOT NULL,
+      registration_number VARCHAR(100) NOT NULL UNIQUE,
+      daily_rent_price INTEGER NOT NULL,
+      availability_status VARCHAR(50) NOT NULL
+     )`);
+
+    console.log("Vehicles table created successfully");
+  } catch (error: any) {
+    console.error("Error creating vehicles table:", error);
   }
 };
 
