@@ -17,4 +17,6 @@ router.get("/users/:userId", userController.getUserById);
 //? route => /api/v1/users/1
 router.put("/users/:userId", userController.updateUserById);
 
+//? route => /api/v1/users/1
+router.delete("/users/:userId", userController.deleteUserById);
 export const userRouter = router;

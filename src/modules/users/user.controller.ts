@@ -14,7 +14,6 @@ const createUser = async (req: Request, res: Response) => {
       data: result.rows[0],
     });
   } catch (error: any) {
-
     //? for all other errors
     res.status(500).json({
       success: false,
@@ -77,9 +76,34 @@ const updateUserById = async (req: Request, res: Response) => {
     });
   }
 };
+
+//? delete user by id
+const deleteUserById = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const result = await userService.deleteUserById(userId as any);
+    if (result.rowCount === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully",
+      });
+    }
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 export const userController = {
   createUser,
   getAllUsers,
   getUserById,
   updateUserById,
+  deleteUserById,
 };
