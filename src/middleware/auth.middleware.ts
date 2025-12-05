@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { ENV } from "../config/dotenv.config";
 
-const auth = () => {
+const auth = (...roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const authToken = req.headers.authorization;
 
@@ -27,10 +27,17 @@ const auth = () => {
 
       //? verify auth token
       const secretKey = ENV.jwtSecret;
-      const decodedToken = jwt.verify(token, secretKey);
+      const decodedToken = jwt.verify(token, secretKey) as JwtPayload;
 
+      //? adding user info to request object
       req.user = decodedToken as JwtPayload;
 
+      //? check for user role authorization
+      if (roles.length && !roles.includes(req.user.role)) {
+        return res.status(403).json({
+          message: "You do not have permission to access this resource",
+        });
+      }
       next();
     } catch (error: any) {
       res.status(500).json({
