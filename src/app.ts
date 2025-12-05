@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { initDB } from "./config/db.config";
 import { userRouter } from "./modules/users/user.route";
+import { authRouter } from "./modules/auth/auth.route";
 
 const app = express();
 
@@ -10,10 +11,8 @@ app.use(express.json());
 //? initialize database
 initDB();
 
-//? basic route
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
-});
+//? auth route
+app.use("/api/v1/auth", authRouter);
 
 //* user CRUD route
 app.use("/api/v1", userRouter);
