@@ -1,27 +1,6 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
 
-//? create a new user controller
-const createUser = async (req: Request, res: Response) => {
-  const payload = req.body;
-
-  try {
-    const result = await userService.createUser(payload);
-
-    res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-      data: result.rows[0],
-    });
-  } catch (error: any) {
-    //? for all other errors
-    res.status(500).json({
-      success: false,
-      message: "Failed to register user",
-      error: error.message,
-    });
-  }
-};
 
 //? get all users controller
 const getAllUsers = async (req: Request, res: Response) => {
@@ -100,8 +79,8 @@ const deleteUserById = async (req: Request, res: Response) => {
     });
   }
 };
+
 export const userController = {
-  createUser,
   getAllUsers,
   getUserById,
   updateUserById,

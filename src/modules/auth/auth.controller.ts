@@ -19,6 +19,26 @@ const signIn = async (req: Request, res: Response) => {
   }
 };
 
+const signUp = async (req: Request, res: Response) => {
+  const payload = req.body;
+
+  try {
+    const result = await authService.signUp(payload);
+
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to register user",
+      error: error.message,
+    });
+  }
+};
 export const authController = {
   signIn,
+  signUp,
 };

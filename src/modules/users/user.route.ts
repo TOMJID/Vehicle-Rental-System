@@ -1,13 +1,10 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { userController } from "./user.controller";
 import auth from "../../middleware/auth.middleware";
 
 const router = express.Router();
 
 //* define user CRUD routes here
-
-//? route => /api/v1/auth/signup
-router.post("/auth/signup", userController.createUser);
 
 //? route => /api/v1/users
 router.get("/users", auth("admin"), userController.getAllUsers);

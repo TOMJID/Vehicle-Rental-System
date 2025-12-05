@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { initDB } from "./config/db.config";
 import { userRouter } from "./modules/users/user.route";
 import { authRouter } from "./modules/auth/auth.route";
