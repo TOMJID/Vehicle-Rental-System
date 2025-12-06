@@ -1,5 +1,10 @@
-import { Pool } from "pg";
+import { Pool, types } from "pg";
 import { ENV } from "./dotenv.config";
+
+//* TYPE PARSER FIX:
+//* 1082 is the OID for the DATE type in Postgres.
+//* We tell it to simply return the string value.
+types.setTypeParser(1082, (val) => val);
 
 const pool = new Pool({
   connectionString: ENV.connectionString,
@@ -52,14 +57,12 @@ export const initDB = async () => {
         rent_start_date DATE NOT NULL,
         rent_end_date DATE NOT NULL,
         total_price INTEGER NOT NULL,
-        status VARCHAR(50) NOT NULL,
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW()
+        status VARCHAR(50) NOT NULL
       )`);
 
     console.log("Bookings table created successfully");
   } catch (error: any) {
-    console.error("Error creating vehicles table:", error);
+    console.error("Error creating bookings table:", error);
   }
 };
 
