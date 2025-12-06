@@ -10,6 +10,10 @@ router.post("/", auth("admin"), vehicleController.createVehicle);
 //? get all vehicles route
 router.get("/", vehicleController.getAllVehicles);
 
+//? get single vehicle route
 router.get("/:vehicleId", vehicleController.getSingleVehicle);
+
+//? update vehicle route only for admin
+router.put("/:vehicleId", auth("admin"), vehicleController.updateVehicle);
 
 export const vehicleRouter = router;
