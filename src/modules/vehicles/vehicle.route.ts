@@ -8,8 +8,6 @@ const router = express.Router();
 router.post("/", auth("admin"), vehicleController.createVehicle);
 
 //? get all vehicles route
-router.get("/", (req, res) => {
-  res.send("Get all vehicles");
-});
+router.get("/", vehicleController.getAllVehicles);
 
 export const vehicleRouter = router;
