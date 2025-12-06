@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
 
-
 //? get all users controller
 const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -24,7 +23,7 @@ const getUserById = async (req: Request, res: Response) => {
     if (result.rows.length === 0) {
       res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "User doesn't exist",
       });
     } else {
       res.status(200).json({
@@ -33,7 +32,12 @@ const getUserById = async (req: Request, res: Response) => {
         data: result.rows[0],
       });
     }
-  } catch (error: any) {}
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 //? update user according to id
