@@ -38,7 +38,33 @@ const getAllVehicles = async (req: Request, res: Response) => {
   }
 };
 
+//? grt dingle vehicle
+const getSingleVehicle = async (req: Request, res: Response) => {
+  const { vehicleId } = req.params;
+  try {
+    const result = await vehicleService.getSingleVehicle(vehicleId as string);
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "this Id doesn't exist",
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Vehicle found",
+        data: result.rows[0],
+      });
+    }
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const vehicleController = {
   createVehicle,
   getAllVehicles,
+  getSingleVehicle,
 };

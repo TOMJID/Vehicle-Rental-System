@@ -10,4 +10,6 @@ router.post("/", auth("admin"), vehicleController.createVehicle);
 //? get all vehicles route
 router.get("/", vehicleController.getAllVehicles);
 
+router.get("/:vehicleId", vehicleController.getSingleVehicle);
+
 export const vehicleRouter = router;
