@@ -255,7 +255,7 @@ const returnExpiredBookings = async () => {
   try {
     await client.query("BEGIN");
 
-    // Find expired active bookings
+    //! find expired active bookings
     const result = await client.query(`
             SELECT * FROM bookings 
             WHERE status = 'active' AND rent_end_date < NOW()
@@ -265,13 +265,13 @@ const returnExpiredBookings = async () => {
     const expiredBookings = result.rows;
 
     for (const booking of expiredBookings) {
-      // Update booking
+      //? update booking
       await client.query(
         `UPDATE bookings SET status = 'returned' WHERE id = $1`,
         [booking.id]
       );
 
-      // Update vehicle
+      //? update vehicle
       await client.query(
         `UPDATE vehicles SET availability_status = 'available' WHERE id = $1`,
         [booking.vehicle_id]
@@ -279,9 +279,9 @@ const returnExpiredBookings = async () => {
     }
 
     await client.query("COMMIT");
-    // Only log if something happened to avoid spam
+    //? only log if something happened to avoid spam
     if (expiredBookings.length > 0) {
-        console.log(`Auto-returned ${expiredBookings.length} expired bookings.`);
+      console.log(`Auto-returned ${expiredBookings.length} expired bookings.`);
     }
   } catch (error) {
     await client.query("ROLLBACK");
