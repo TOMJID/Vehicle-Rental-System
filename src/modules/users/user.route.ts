@@ -24,6 +24,10 @@ router.put(
 );
 
 //? route => /api/v1/users/1
-router.delete("/users/:userId", userController.deleteUserById);
+router.delete(
+  "/users/:userId",
+  auth("admin"),
+  userController.deleteUserById
+);
 
 export const userRouter = router;
