@@ -17,7 +17,7 @@ initDB();
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Welcome to the Vehicle Rental System API where you can rent your favorite vehicle by Tomjid",
+    message: "Welcome to the Vehicle Rental System API where you can rent your favorite vehicle made by Tomjid",
   });
 });
 
