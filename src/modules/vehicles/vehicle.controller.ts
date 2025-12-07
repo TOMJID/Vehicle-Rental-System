@@ -14,9 +14,19 @@ const createVehicle = async (req: Request, res: Response) => {
       data: result.rows[0],
     });
   } catch (error: any) {
-    res.status(400).json({
+    let statusCode = 500;
+    if (
+      error.message === "Vehicle with this registration number already exists" ||
+      error.message === "Daily rent price must be a positive number" ||
+      error.message.includes("Type must be one of the following") ||
+      error.message.includes("Availability status must be one of the following")
+    ) {
+      statusCode = 400;
+    }
+
+    res.status(statusCode).json({
       success: false,
-      message: error.message,
+      message: error.message || "Internal Server Error",
     });
   }
 };

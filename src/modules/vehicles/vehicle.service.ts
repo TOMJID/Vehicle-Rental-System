@@ -37,6 +37,15 @@ const createVehicle = async (payload: Record<string, unknown>) => {
     );
   }
 
+  //? check if vehicle with same registration number exists
+  const existingVehicle = await pool.query(
+    `SELECT * FROM vehicles WHERE registration_number=$1`,
+    [registration_number]
+  );
+  if (existingVehicle.rows.length > 0) {
+    throw new Error("Vehicle with this registration number already exists");
+  }
+
   const result = await pool.query(
     `INSERT INTO vehicles (vehicles_name, type, registration_number, daily_rent_price, availability_status) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
     [
