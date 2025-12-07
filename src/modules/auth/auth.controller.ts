@@ -43,7 +43,8 @@ const signUp = async (req: Request, res: Response) => {
     if (
         error.message === "Email is required and must be in lowercase" || 
         error.message === "Password must be longer than 6 characters" ||
-        error.message === "Role must be either 'admin' or 'customer'"
+        error.message === "Role must be either 'admin' or 'customer'" ||
+        error.message === "User with this email already exists"
     ) {
         statusCode = 400;
     }

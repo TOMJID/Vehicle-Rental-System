@@ -55,6 +55,14 @@ const signUp = async (payload: Record<string, any>) => {
   //? hash password before storing
   const hashedPass = await bcrypt.hash(password, 10);
 
+  //? check if user already exists
+  const existingUser = await pool.query(`SELECT * FROM users WHERE email=$1`, [
+    email,
+  ]);
+  if (existingUser.rows.length > 0) {
+    throw new Error("User with this email already exists");
+  }
+
   //? store user in the database
   const result = await pool.query(
     `INSERT INTO users(name, email, password, phone, role) VALUES($1, $2, $3, $4, $5) RETURNING *`,

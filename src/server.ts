@@ -8,7 +8,7 @@ const PORT = ENV.port;
 app.listen(PORT, () => {
   console.log(`The server is running on http://localhost:${PORT}/`);
   
-  // Auto-return expired bookings every minute
+  //! auto-return expired bookings every minute
   setInterval(() => {
     bookingService.returnExpiredBookings();
   }, 60000);
