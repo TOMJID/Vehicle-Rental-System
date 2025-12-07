@@ -64,7 +64,65 @@ const getBooking = async (req: Request, res: Response) => {
   }
 };
 
+//? update booking controller
+const updateBooking = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    const { bookingId } = req.params;
+    const { status } = req.body;
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const result = await bookingService.updateBooking(
+      Number(bookingId),
+      user.id,
+      user.role,
+      status
+    );
+
+    let message = "Booking updated successfully";
+    if (status === "cancelled") {
+      message = "Booking cancelled successfully";
+    } else if (status === "returned") {
+      message = "Booking marked as returned. Vehicle is now available";
+    }
+
+    res.status(200).json({
+      success: true,
+      message: message,
+      data: result,
+    });
+  } catch (error: any) {
+    console.error("Update Booking Error:", error.message);
+    
+    let statusCode = 500;
+    if (
+        error.message === "Booking not found" ||
+        error.message === "You are not authorized to manage this booking" ||
+        error.message === "Cannot cancel booking after it has started" ||
+        error.message === "Invalid status update for customer" || 
+        error.message === "Invalid status update for admin" ||
+        error.message === "Invalid role"
+    ) {
+        statusCode = 400; 
+        if (error.message === "You are not authorized to manage this booking") statusCode = 403;
+        if (error.message === "Booking not found") statusCode = 404;
+    }
+
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Internal Server Error",
+    });
+  }
+};
+
 export const bookingController = {
   createBooking,
   getBooking,
+  updateBooking,
 };
