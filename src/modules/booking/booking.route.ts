@@ -11,5 +11,9 @@ routes.post("/", auth("admin", "customer"), bookingController.createBooking);
 routes.get("/", auth("admin", "customer"), bookingController.getBooking);
 
 //? update booking (cancel/return)
-routes.put("/:bookingId", auth("admin", "customer"), bookingController.updateBooking);
+routes.put(
+  "/:bookingId",
+  auth("admin", "customer"),
+  bookingController.updateBooking
+);
 export const bookingRoute = routes;

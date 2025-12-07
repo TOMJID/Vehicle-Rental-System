@@ -99,19 +99,20 @@ const updateBooking = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error("Update Booking Error:", error.message);
-    
+
     let statusCode = 500;
     if (
-        error.message === "Booking not found" ||
-        error.message === "You are not authorized to manage this booking" ||
-        error.message === "Cannot cancel booking after it has started" ||
-        error.message === "Invalid status update for customer" || 
-        error.message === "Invalid status update for admin" ||
-        error.message === "Invalid role"
+      error.message === "Booking not found" ||
+      error.message === "You are not authorized to manage this booking" ||
+      error.message === "Cannot cancel booking after it has started" ||
+      error.message === "Invalid status update for customer" ||
+      error.message === "Invalid status update for admin" ||
+      error.message === "Invalid role"
     ) {
-        statusCode = 400; 
-        if (error.message === "You are not authorized to manage this booking") statusCode = 403;
-        if (error.message === "Booking not found") statusCode = 404;
+      statusCode = 400;
+      if (error.message === "You are not authorized to manage this booking")
+        statusCode = 403;
+      if (error.message === "Booking not found") statusCode = 404;
     }
 
     res.status(statusCode).json({
