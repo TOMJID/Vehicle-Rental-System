@@ -249,8 +249,51 @@ const updateBooking = async (
   }
 };
 
+//? check and return expired bookings
+const returnExpiredBookings = async () => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    // Find expired active bookings
+    const result = await client.query(`
+            SELECT * FROM bookings 
+            WHERE status = 'active' AND rent_end_date < NOW()
+            FOR UPDATE
+        `);
+
+    const expiredBookings = result.rows;
+
+    for (const booking of expiredBookings) {
+      // Update booking
+      await client.query(
+        `UPDATE bookings SET status = 'returned' WHERE id = $1`,
+        [booking.id]
+      );
+
+      // Update vehicle
+      await client.query(
+        `UPDATE vehicles SET availability_status = 'available' WHERE id = $1`,
+        [booking.vehicle_id]
+      );
+    }
+
+    await client.query("COMMIT");
+    // Only log if something happened to avoid spam
+    if (expiredBookings.length > 0) {
+        console.log(`Auto-returned ${expiredBookings.length} expired bookings.`);
+    }
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("Error auto-returning bookings:", error);
+  } finally {
+    client.release();
+  }
+};
+
 export const bookingService = {
   createBooking,
   getBooking,
   updateBooking,
+  returnExpiredBookings,
 };

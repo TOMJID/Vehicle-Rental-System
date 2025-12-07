@@ -6,15 +6,23 @@ const signIn = async (req: Request, res: Response) => {
 
   try {
     const result = await authService.signIn(payload as Record<string, any>);
+    
+    if (!result) {
+        return res.status(404).json({
+            success: false,
+            message: "User not found or password incorrect",
+        });
+    }
+
     res.status(200).json({
       success: true,
       message: "Login successful",
       data: result,
     });
   } catch (error: any) {
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      message: "User account not found",
+      message: "Internal Server Error",
     });
   }
 };
@@ -31,10 +39,18 @@ const signUp = async (req: Request, res: Response) => {
       data: result.rows[0],
     });
   } catch (error: any) {
-    res.status(500).json({
+    let statusCode = 500;
+    if (
+        error.message === "Email is required and must be in lowercase" || 
+        error.message === "Password must be longer than 6 characters" ||
+        error.message === "Role must be either 'admin' or 'customer'"
+    ) {
+        statusCode = 400;
+    }
+    res.status(statusCode).json({
       success: false,
-      message: "Failed to register user",
-      error: error.message,
+      message: statusCode === 400 ? error.message : "Failed to register user",
+      error: statusCode === 500 ? error.message : undefined,
     });
   }
 };
