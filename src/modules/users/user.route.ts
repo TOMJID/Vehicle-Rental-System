@@ -17,7 +17,11 @@ router.get(
 );
 
 //? route => /api/v1/users/1
-router.put("/users/:userId", userController.updateUserById);
+router.put(
+  "/users/:userId",
+  auth("admin", "customer"),
+  userController.updateUserById
+);
 
 //? route => /api/v1/users/1
 router.delete("/users/:userId", userController.deleteUserById);

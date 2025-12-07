@@ -18,14 +18,35 @@ const getUserById = async (userId: number) => {
 
 //? update user by id
 const updateUserById = async (
-  payload: Record<string, unknown>,
-  userId: any
+  userId: number,
+  payload: Record<string, any>,
+  actingUser: { id: number; role: string }
 ) => {
+  // Check authorization
+  if (actingUser.role !== "admin" && actingUser.id !== userId) {
+    throw new Error("You are not authorized to update this profile");
+  }
+
+  // Fetch current user
+  const findUser = await pool.query(`SELECT * FROM users WHERE id=$1`, [userId]);
+  if (findUser.rows.length === 0) {
+    throw new Error("User not found");
+  }
+  const currentUser = findUser.rows[0];
+
   const { name, email, phone, role } = payload;
+
+  // Only admin can update role
+  const newRole =
+    actingUser.role === "admin" && role ? role : currentUser.role;
+
+  const newName = name || currentUser.name;
+  const newEmail = email || currentUser.email;
+  const newPhone = phone || currentUser.phone;
 
   const result = await pool.query(
     `UPDATE users SET name=$1, email=$2, phone=$3, role=$4  WHERE id=$5 RETURNING *`,
-    [name, email, phone, role, userId]
+    [newName, newEmail, newPhone, newRole, userId]
   );
 
   return result;

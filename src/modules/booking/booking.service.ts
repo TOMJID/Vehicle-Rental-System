@@ -164,7 +164,7 @@ const updateBooking = async (
   try {
     await client.query("BEGIN");
 
-    // Check if booking exists
+    //? check if booking exists
     const bookingRes = await client.query(
       `SELECT * FROM bookings WHERE id = $1 FOR UPDATE`,
       [bookingId]
@@ -176,7 +176,7 @@ const updateBooking = async (
 
     const booking = bookingRes.rows[0];
 
-    // Logic for Customer
+    //? for Customer
     if (role === "customer") {
       if (booking.customer_id !== userId) {
         throw new Error("You are not authorized to manage this booking");
@@ -186,7 +186,7 @@ const updateBooking = async (
         throw new Error("Invalid status update for customer");
       }
 
-      // Check if cancellation is allowed (before start date)
+      //! check if cancellation is allowed (before start date)
       const currentDate = new Date();
       const startDate = new Date(booking.rent_start_date);
 
@@ -194,13 +194,13 @@ const updateBooking = async (
         throw new Error("Cannot cancel booking after it has started");
       }
 
-      // Update booking status
+      //? update booking status
       const updateRes = await client.query(
         `UPDATE bookings SET status = 'cancelled' WHERE id = $1 RETURNING *`,
         [bookingId]
       );
 
-      // Update vehicle status to available
+      //? update vehicle status to available
       await client.query(
         `UPDATE vehicles SET availability_status = 'available' WHERE id = $1`,
         [booking.vehicle_id]
@@ -209,34 +209,34 @@ const updateBooking = async (
       await client.query("COMMIT");
       return updateRes.rows[0];
     }
-    // Logic for Admin
+    //? for Admin
     else if (role === "admin") {
       if (newStatus !== "returned") {
         throw new Error("Invalid status update for admin");
       }
 
-      // Update booking status
+      // update booking status
       const updateRes = await client.query(
         `UPDATE bookings SET status = 'returned' WHERE id = $1 RETURNING *`,
         [bookingId]
       );
 
-      // Update vehicle status to available
+      //? update vehicle status to available
       await client.query(
         `UPDATE vehicles SET availability_status = 'available' WHERE id = $1`,
         [booking.vehicle_id]
       );
 
       await client.query("COMMIT");
-      
+
       const updatedBooking = updateRes.rows[0];
-      
-      // Return with vehicle info structure as requested
+
+      //? return data
       return {
         ...updatedBooking,
         vehicle: {
-            availability_status: "available"
-        }
+          availability_status: "available",
+        },
       };
     } else {
       throw new Error("Invalid role");

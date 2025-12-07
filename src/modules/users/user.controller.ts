@@ -44,17 +44,34 @@ const getUserById = async (req: Request, res: Response) => {
 const updateUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const payload = req.body;
+  const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized",
+    });
+  }
 
   try {
-    const result = await userService.updateUserById(payload, userId as any);
+    const result = await userService.updateUserById(
+      Number(userId),
+      payload,
+      user as { id: number; role: string }
+    );
     res.status(200).json({
       success: true,
       message: "User updated successfully",
       data: result.rows[0],
     });
   } catch (error: any) {
-    res.status(404).json({
-      success: true,
+    let statusCode = 500;
+    if (error.message === "User not found") statusCode = 404;
+    if (error.message === "You are not authorized to update this profile")
+      statusCode = 403;
+
+    res.status(statusCode).json({
+      success: false,
       message: error.message,
     });
   }
