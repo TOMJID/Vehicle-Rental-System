@@ -43,7 +43,7 @@ const signUp = async (payload: Record<string, any>) => {
   }
 
   //! check if password is missing OR if length is 6 or less
-  if (!password || password.length <= 6) {
+  if (!password || password.length < 6) {
     throw new Error("Password must be longer than 6 characters");
   }
 
