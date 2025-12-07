@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { vehicleService } from "./vehicle.service";
+import { bookingService } from "../booking/booking.service";
 
 //? create vehicle
 const createVehicle = async (req: Request, res: Response) => {
@@ -34,6 +35,7 @@ const createVehicle = async (req: Request, res: Response) => {
 ///? get all vehicles
 const getAllVehicles = async (req: Request, res: Response) => {
   try {
+    await bookingService.returnExpiredBookings();
     const result = await vehicleService.getAllVehicles();
     res.status(200).json({
       success: true,
