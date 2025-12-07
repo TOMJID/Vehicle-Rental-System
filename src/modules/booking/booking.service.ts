@@ -1,13 +1,7 @@
 import pool from "../../config/db.config";
 
-interface BookingPayload {
-  customer_id: number;
-  vehicle_id: number;
-  rent_start_date: string;
-  rent_end_date: string;
-}
-
-const createBooking = async (payload: BookingPayload) => {
+//? create booking service
+const createBooking = async (payload: Record<string, any>) => {
   const { customer_id, vehicle_id, rent_start_date, rent_end_date } = payload;
 
   const client = await pool.connect();
@@ -86,6 +80,79 @@ const createBooking = async (payload: BookingPayload) => {
   }
 };
 
+//? get booking Role-based
+const getBooking = async (userId: number, role: string) => {
+  const client = await pool.connect();
+
+  try {
+    if (role === "admin") {
+      const query = `
+        SELECT 
+          b.id, b.customer_id, b.vehicle_id, b.rent_start_date, b.rent_end_date, b.total_price, b.status,
+          u.name as user_name, u.email as user_email,
+          v.vehicles_name, v.registration_number
+        FROM bookings b
+        JOIN users u ON b.customer_id = u.id
+        JOIN vehicles v ON b.vehicle_id = v.id
+        ORDER BY b.id DESC;
+      `;
+
+      const result = await client.query(query);
+
+      // Map DB rows to the Admin JSON structure
+      return result.rows.map((row) => ({
+        id: row.id,
+        customer_id: row.customer_id,
+        vehicle_id: row.vehicle_id,
+        rent_start_date: row.rent_start_date,
+        rent_end_date: row.rent_end_date,
+        total_price: row.total_price,
+        status: row.status,
+        customer: {
+          name: row.user_name,
+          email: row.user_email,
+        },
+        vehicle: {
+          vehicle_name: row.vehicles_name, // Mapping 'vehicles_name' -> 'vehicle_name'
+          registration_number: row.registration_number,
+        },
+      }));
+    } else {
+      const query = `
+        SELECT 
+          b.id, b.vehicle_id, b.rent_start_date, b.rent_end_date, b.total_price, b.status,
+          v.vehicles_name, v.registration_number, v.type
+        FROM bookings b
+        JOIN vehicles v ON b.vehicle_id = v.id
+        WHERE b.customer_id = $1
+        ORDER BY b.id DESC;
+      `;
+
+      const result = await client.query(query, [userId]);
+
+      return result.rows.map((row) => ({
+        id: row.id,
+        vehicle_id: row.vehicle_id,
+        rent_start_date: row.rent_start_date,
+        rent_end_date: row.rent_end_date,
+        total_price: row.total_price,
+        status: row.status,
+        vehicle: {
+          vehicle_name: row.vehicles_name,
+          registration_number: row.registration_number,
+          type: row.type,
+        },
+      }));
+    }
+  } catch (error: any) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 export const bookingService = {
   createBooking,
+  getBooking,
 };

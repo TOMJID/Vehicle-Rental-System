@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { bookingService } from "./booking.service";
 
+//? create booking controller
 const createBooking = async (req: Request, res: Response) => {
   try {
     // The payload comes from req.body
@@ -31,6 +32,39 @@ const createBooking = async (req: Request, res: Response) => {
   }
 };
 
+//? get booking Role-based
+const getBooking = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    console.log(req.user);
+    const result = await bookingService.getBooking(user.id, user.role);
+    const message =
+      user.role === "admin"
+        ? "Bookings retrieved successfully"
+        : "Your bookings retrieved successfully";
+
+    res.status(200).json({
+      success: true,
+      message: message,
+      data: result,
+    });
+  } catch (error: any) {
+    console.error("Get All Bookings Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const bookingController = {
   createBooking,
+  getBooking,
 };
